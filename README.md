@@ -1,8 +1,8 @@
-# 🚀 Live Workspace
+# 🚀 BackDeck
 
 > **One place to understand what's happening inside your backend.**
 
-Live Workspace is a web-based developer workspace that unifies everything a backend developer needs into a single interface — project structure, Docker monitoring, logs, errors, Swagger/OpenAPI, architecture map, and AI-assisted analysis — so you never have to jump between a terminal, Docker Desktop, Swagger, logs, and monitoring tools again.
+BackDeck is a web-based developer workspace that unifies everything a backend developer needs into a single interface — project structure, Docker monitoring, logs, errors, Swagger/OpenAPI, architecture map, and AI-assisted analysis — so you never have to jump between a terminal, Docker Desktop, Swagger, logs, and monitoring tools again.
 
 ---
 
@@ -52,7 +52,7 @@ Live Workspace is a web-based developer workspace that unifies everything a back
 
 ## 🏗 Architecture
 
-Live Workspace follows a **microservice architecture** in a **monorepo**. Each service owns its database and communicates through defined interfaces.
+BackDeck follows a **microservice architecture** in a **monorepo**. Each service owns its database and communicates through defined interfaces.
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -157,4 +157,4 @@ This repository is publicly available for **viewing and evaluation purposes only
 
 ---
 
-*Live Workspace — one place to understand what's happening inside your backend.*
+*BackDeck — one place to understand what's happening inside your backend.*
