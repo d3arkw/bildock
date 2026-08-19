@@ -100,7 +100,7 @@ BackDeck follows a **microservice architecture** in a **monorepo**. Each service
 ## 📁 Repository Structure
 
 ```
-app/
+backdeck/
 ├── services/
 │   ├── gateway/          # API Gateway (routing, JWT, Swagger proxy)
 │   ├── auth/             # Auth Service (email/password, GitHub, Google)
@@ -109,8 +109,19 @@ app/
 │   ├── code_analyzer/    # Code Analyzer (AI analysis)
 │   └── discovery/        # Discovery Service (service registry)
 ├── frontend/             # React + Vite SPA
+├── libs/                 # Shared libraries (config, async DB, JWT)
 ├── deploy/               # Docker Compose, Nginx, CI/CD configs
 └── docs/                 # Project documentation
+```
+
+Every service follows the same isolated layout:
+
+```
+services/gateway/
+├── app/
+│   └── main.py          # FastAPI application + /health endpoint
+├── requirements.txt     # Service-only dependencies
+└── Dockerfile           # Service-only image
 ```
 
 ---
