@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 app = FastAPI(
-    title="BackDeck Analytics Service",
+    title="Bildock Analytics Service",
     version="0.1.0",
 )
 

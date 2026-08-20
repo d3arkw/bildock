@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 app = FastAPI(
-    title="BackDeck Project Service",
+    title="Bildock Project Service",
     version="0.1.0",
 )
 

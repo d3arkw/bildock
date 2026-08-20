@@ -1,4 +1,4 @@
-# BackDeck Shared Libraries
+# Bildock Shared Libraries
 
 Общие библиотеки для сервисов (config, async DB engine, JWT, исключения).
 
