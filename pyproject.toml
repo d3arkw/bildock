@@ -1,0 +1,8 @@
+[project]
+name = "bildock-workspace"
+version = "0.1.0"
+description = "Bildock monorepo workspace root"
+requires-python = ">=3.13"
+
+[tool.uv.workspace]
+members = ["libs/*"]

@@ -1,8 +1,10 @@
+from datetime import UTC, datetime, timedelta
+from typing import Any
+
 import jwt
 from passlib.context import CryptContext
-from datetime import datetime, timedelta, timezone
+
 from bildock_lib.config import get_settings
-from typing import Any
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -17,7 +19,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def create_access_token(subject: str | int) -> str:
     settings = get_settings()
-    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.jwt_expires_minutes)
+    expire = datetime.now(UTC) + timedelta(minutes=settings.jwt_expires_minutes)
     payload = {"sub": str(subject), "exp": expire}
     return jwt.encode(payload, settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
 

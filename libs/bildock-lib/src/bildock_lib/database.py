@@ -1,7 +1,9 @@
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+from collections.abc import AsyncIterator
+
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
+
 from bildock_lib.config import get_settings
-from typing import AsyncIterator
 
 engine = create_async_engine(get_settings().database_url)
 async_session = async_sessionmaker(engine)

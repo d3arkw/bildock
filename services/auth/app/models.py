@@ -1,9 +1,8 @@
 from datetime import datetime
 
-from sqlalchemy import String, func, DateTime
-
 from bildock_lib.database import Base
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy import DateTime, String, func
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class User(Base):
@@ -12,4 +11,4 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     password_hash: Mapped[str] = mapped_column(String(255))
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
