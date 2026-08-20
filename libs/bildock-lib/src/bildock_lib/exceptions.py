@@ -29,4 +29,6 @@ class UnauthorizedError(AppError):
 def register_exception_handlers(app: FastAPI) -> None:
     @app.exception_handler(AppError)
     def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
-        return JSONResponse(status_code=exc.status_code, content={"message": exc.message, "code": exc.code})
+        return JSONResponse(
+            status_code=exc.status_code, content={"message": exc.message, "code": exc.code}
+        )

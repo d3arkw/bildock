@@ -1,0 +1,11 @@
+# Конфигурация ruff для всего проекта Bildock
+# ruff ищет этот файл при запуске из корня репозитория
+
+line-length = 100
+
+exclude = [
+    "**/migrations",        # сгенерированные Alembic-файлы не линтуем
+    "**/migrations/**",
+    ".venv",
+    "__pycache__",
+]
