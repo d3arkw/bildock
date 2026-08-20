@@ -1,0 +1,23 @@
+[project]
+name = "bildock-lib"
+version = "0.1.0"
+description = "bildock-libs for bildock"
+readme = "README.md"
+authors = [
+    { name = "Denis", email = "d3arkw@icloud.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "asyncpg>=0.31.0",
+    "bcrypt==4.0.1",
+    "fastapi>=0.141.1",
+    "greenlet>=3.5.5",
+    "passlib[bcrypt]>=1.7.4",
+    "pydantic-settings>=2.15.0",
+    "pyjwt>=2.13.0",
+    "sqlalchemy>=2.0.52",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
