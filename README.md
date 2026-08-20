@@ -28,31 +28,32 @@ Bildock is a web-based developer workspace that unifies everything a backend dev
 ### Backend
 | Technology | Purpose |
 |---|---|
-| Python 3.12+ / FastAPI | Microservices framework |
-| PostgreSQL + SQLAlchemy 2.0 + Alembic | Data layer (separate DB per service) |
-| Redis | Caching, rate limiting, WebSocket state |
-| Kafka | Event-driven communication |
-| WebSocket | Real-time updates |
-| Prometheus + Grafana | Metrics & dashboards |
-| Docker / Docker Compose | Containerization & orchestration |
-| GitHub Actions | CI/CD |
+| Python 3.13+ / FastAPI | Microservices framework |
+| PostgreSQL + SQLAlchemy 2.0 (async) + Alembic | Data layer, separate DB per service, migrations |
+| Redis | Caching, rate limiting, WebSocket state (planned) |
+| Kafka | Event-driven communication (planned) |
+| WebSocket | Real-time updates (planned) |
+| Prometheus + Grafana | Metrics & dashboards (planned) |
+| Docker / Docker Compose | Containerization & local development |
+| uv | Fast Python package & workspace manager |
+| ruff + pytest | Linting, formatting, testing |
+| GitHub Actions | CI (lint + format + tests on every PR) |
 
 ### Frontend
 | Technology | Purpose |
 |---|---|
-| React + Vite | Web SPA |
-| JavaScript | Frontend language |
+| React + Vite | Web SPA (planned) |
 
 ### AI
 | Technology | Purpose |
 |---|---|
-| Google Gemini Flash API | Fast code/error analysis (Advanced tier planned) |
+| Google Gemini Flash API | Fast code/error analysis (planned) |
 
 ---
 
 ## 🏗 Architecture
 
-Bildock follows a **microservice architecture** in a **monorepo**. Each service owns its database and communicates through defined interfaces.
+Bildock follows a **microservice architecture** in a **monorepo (uv workspace)**. Each service owns its database and communicates through defined interfaces.
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -101,62 +102,94 @@ Bildock follows a **microservice architecture** in a **monorepo**. Each service 
 
 ```
 bildock/
-├── services/
-│   ├── gateway/          # API Gateway (routing, JWT, Swagger proxy)
-│   ├── auth/             # Auth Service (email/password, GitHub, Google)
-│   ├── project/          # Project Service (projects, files, errors, events)
-│   ├── analytics/        # Analytics Service (event consumption, metrics)
-│   ├── code_analyzer/    # Code Analyzer (AI analysis)
-│   └── discovery/        # Discovery Service (service registry)
-├── frontend/             # React + Vite SPA
-├── libs/                 # Shared libraries (config, async DB, JWT)
-├── deploy/               # Docker Compose, Nginx, CI/CD configs
-└── docs/                 # Project documentation
+├── services/               # microservices (each with its own DB)
+│   ├── gateway/            # API Gateway (routing, JWT, Swagger proxy)
+│   ├── auth/               # Auth Service (email/password, GitHub, Google)
+│   │   ├── app/            # application code + User model
+│   │   └── migrations/     # Alembic migrations
+│   ├── project/            # Project Service (planned)
+│   ├── analytics/          # Analytics Service (planned)
+│   ├── code_analyzer/      # Code Analyzer (planned)
+│   └── discovery/          # Discovery Service (planned)
+├── libs/
+│   └── bildock-lib/        # shared library: config, database, security, exceptions
+├── frontend/               # React + Vite SPA (planned)
+├── deploy/                 # deployment configs (planned)
+├── docs/                   # project documentation
+├── .github/workflows/ci.yml# CI: ruff + format + pytest on every PR
+├── docker-compose.yml      # local dev: postgres, redis, kafka, 6 services
+├── pyproject.toml          # uv workspace root
+├── ruff.toml               # linter configuration
+└── .env.example            # environment template
 ```
 
 Every service follows the same isolated layout:
 
 ```
-services/gateway/
-├── app/
-│   └── main.py          # FastAPI application + /health endpoint
-├── requirements.txt     # Service-only dependencies
-└── Dockerfile           # Service-only image
+services/<name>/
+├── app/                    # FastAPI application
+├── migrations/             # Alembic migrations (per service DB)
+└── Dockerfile
 ```
-
----
-
-## 🗺 Roadmap (MVP · ~16 weeks)
-
-| Milestone | Scope | Weeks |
-|---|---|---|
-| **MS1 — Foundation** | Monorepo, 6 service skeletons, docker-compose, CI, Auth (email + GitHub + Google OAuth) | 1–2 |
-| **MS2 — Core Services** | Gateway, Project Service, Workspace Connect CLI | 3–5 |
-| **MS3 — Live + UI** | WebSocket hub, Dashboard, tree, file viewer, Swagger, errors, notifications | 6–8 |
-| **MS4 — Deployment** | VPS: docker-compose.prod, Nginx, SSL, backups | 9 |
-| **MS5 — AI** | Gemini integration, error/file analysis, AI interface | 10–11 |
-| **MS6 — Redis + Kafka** | Rate limiting, WS-state, event-driven communication | 12–13 |
-| **MS7 — Monitoring + Map** | Prometheus/Grafana, architecture map | 14–15 |
-| **MS8 — Final** | E2E verification, production deploy, docs | 16 |
-
-*Beyond MVP: billing & subscriptions, Git-based connection, PR/commit analysis, external notifications, self-hosted, i18n.*
-
----
-
-## 📊 Project Status
-
-**Early development — building the MVP foundation.**
-
-- ✅ Repository & licensing
-- ✅ Architecture and 16-week roadmap finalized
-- 🚧 In progress: monorepo skeleton, service scaffolding
-- ⏳ Planned: see [Roadmap](#-roadmap-mvp--16-weeks)
 
 ---
 
 ## 🚀 Getting Started
 
-> Development setup guide will be added as the project evolves (week 1–2: monorepo skeleton + docker-compose.dev).
+Requirements: Docker, uv.
+
+```bash
+# 1. Start infrastructure (PostgreSQL, Redis, Kafka)
+docker compose up -d
+
+# 2. Install dependencies (uv workspace, all packages)
+uv sync --all-packages
+
+# 3. Run migrations (per service)
+cd services/auth && alembic upgrade head
+
+# 4. Run checks locally
+uv run ruff check .
+uv run ruff format --check .
+uv run pytest
+```
+
+> Note: local PostgreSQL on the host occupies port 5432, so the container exposes 5433. Inside the docker network services use `postgres:5432`.
+
+---
+
+## 🔄 Development Workflow
+
+Every task is developed on a separate branch and merged via Pull Request:
+
+```bash
+git checkout -b feat/<issue-number>-<name>
+# ... work ...
+git add . && git commit -m "feat: ..."
+git push -u origin feat/<branch>
+gh pr create --title "..." --body "Closes #<issue>"
+# CI runs automatically (ruff + format + pytest) — green required
+gh pr merge --merge
+```
+
+CI protects `main`: no broken code gets merged.
+
+---
+
+## 🗺 Roadmap (MVP · ~16 weeks)
+
+| Milestone | Scope | Status |
+|---|---|---|
+| **MS1 — Foundation** | Monorepo, service skeletons, docker-compose, shared library, Alembic, CI, Auth | 🚧 In progress (6/8 done) |
+| **MS2 — Core Services** | Gateway, Project Service, Workspace Connect CLI | ⏳ |
+| **MS3 — Live + UI** | WebSocket hub, Dashboard, tree, file viewer, Swagger, errors, notifications | ⏳ |
+| **MS4 — Deployment** | VPS: docker-compose.prod, Nginx, SSL, backups | ⏳ |
+| **MS5 — AI** | Gemini integration, error/file analysis, AI interface | ⏳ |
+| **MS6 — Redis + Kafka** | Rate limiting, WS-state, event-driven communication | ⏳ |
+| **MS7 — Monitoring + Map** | Prometheus/Grafana, architecture map | ⏳ |
+| **MS8 — Final** | E2E verification, production deploy, docs | ⏳ |
+
+*Beyond MVP: billing & subscriptions, Git-based connection, PR/commit analysis, external notifications, self-hosted, i18n.*
 
 ---
 
