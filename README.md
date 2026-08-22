@@ -180,7 +180,7 @@ CI protects `main`: no broken code gets merged.
 
 | Milestone | Scope | Status |
 |---|---|---|
-| **MS1 — Foundation** | Monorepo, service skeletons, docker-compose, shared library, Alembic, CI, Auth | 🚧 In progress (6/8 done) |
+| **MS1 — Foundation** | Monorepo, service skeletons, docker-compose, shared library, Alembic, CI, Auth | 🚧 In progress — Auth #7 done, #8 in work (refresh + logout) |
 | **MS2 — Core Services** | Gateway, Project Service, Workspace Connect CLI | ⏳ |
 | **MS3 — Live + UI** | WebSocket hub, Dashboard, tree, file viewer, Swagger, errors, notifications | ⏳ |
 | **MS4 — Deployment** | VPS: docker-compose.prod, Nginx, SSL, backups | ⏳ |
