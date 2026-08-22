@@ -13,8 +13,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+
 @router.post("/register", response_model=UserOut)
-async def register_user(db: Annotated[AsyncSession, Depends(get_session)],user_data: UserCreate):
+async def register_user(db: Annotated[AsyncSession, Depends(get_session)], user_data: UserCreate):
     result = await db.execute(select(User).where(User.email == user_data.email))
     user = result.scalars().first()
     if user:
@@ -22,7 +23,8 @@ async def register_user(db: Annotated[AsyncSession, Depends(get_session)],user_d
     hashed_password = hash_password(user_data.password)
     new_user = User(
         email=user_data.email,
-        password_hash=hashed_password,)
+        password_hash=hashed_password,
+    )
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)
@@ -30,7 +32,10 @@ async def register_user(db: Annotated[AsyncSession, Depends(get_session)],user_d
 
 
 @router.post("/login")
-async def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: Annotated[AsyncSession, Depends(get_session)]):
+async def login_user(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Annotated[AsyncSession, Depends(get_session)],
+):
     result = await db.execute(select(User).where(User.email == form_data.username))
     user = result.scalars().first()
     if not user:
@@ -40,7 +45,7 @@ async def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     token = create_access_token(user.id)
     return {"access_token": token, "token_type": "bearer"}
 
+
 @router.get("/me", response_model=UserOut)
 async def get_user_info(current_user: Annotated[User, Depends(get_current_user)]):
     return current_user
-

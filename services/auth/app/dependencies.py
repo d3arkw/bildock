@@ -11,7 +11,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
-async def get_current_user(db: Annotated[AsyncSession, Depends(get_session)], token: str = Depends(oauth2_scheme)):
+
+async def get_current_user(
+    db: Annotated[AsyncSession, Depends(get_session)], token: str = Depends(oauth2_scheme)
+):
     try:
         payload = decode_token(token)
     except ValueError:
